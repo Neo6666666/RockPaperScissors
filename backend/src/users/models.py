@@ -13,11 +13,11 @@ class Status(str, Enum):
 class Users(models.Model):
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=20, unique=True)
-    password_hash = fields.CharField(max_length=128, null=True)
-    status = fields.CharEnumField(Status)
+    password_hash = fields.CharField(max_length=128)
+    status = fields.CharEnumField(Status, default=Status.ACTIVE)
 
-    class PydanticMeta:
-        exclude = ["password_hash"]
+    # class PydanticMeta:
+    #     exclude = ["password_hash"]
 
 
 User_Pydantic = pydantic_model_creator(Users, name="User")

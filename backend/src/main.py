@@ -3,50 +3,34 @@ from typing import List
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, JSONResponse
 
+from starlette.middleware.cors import CORSMiddleware
+
 from tortoise.contrib.fastapi import register_tortoise
 
 from .users.models import Status, User_Pydantic, UserIn_Pydantic, Users
+
+from .login.login import router as api_router
+from .register.register_controller import router as reg_api_router
 
 
 app = FastAPI()
 
 
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <h2>Your ID: <span id="ws-id"></span></h2>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var client_id = Date.now()
-            document.querySelector("#ws-id").textContent = client_id;
-            var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                message.appendChild(content)
-                messages.appendChild(message)
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+    "https://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # can alter with time
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class ConnectionManager:
@@ -74,11 +58,6 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-@app.get("/")
-async def get():
-    return HTMLResponse(html)
-
-
 @app.get("/users", response_model=List[User_Pydantic])
 async def get_users():
     return await User_Pydantic.from_queryset(Users.exclude(status=Status.OFFLINE))
@@ -96,6 +75,9 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
         manager.disconnect(websocket)
         await manager.broadcast(f"Client #{client_id} left the chat")
 
+
+app.include_router(api_router, prefix="/api")
+app.include_router(reg_api_router, prefix="/api")
 
 register_tortoise(
     app,
