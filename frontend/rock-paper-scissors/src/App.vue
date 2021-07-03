@@ -1,10 +1,30 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Login</router-link>
+    <span>&nbsp;|&nbsp;</span>
+    <router-link to="/register">Register</router-link>
+    <span>&nbsp;|&nbsp;</span>
+    <router-link v-if="loggedIn" to="/home">Home</router-link>
   </div>
   <router-view/>
 </template>
+
+
+<script lang="ts">
+import { defineComponent, Ref, ref } from 'vue';
+import { mapGetters } from 'vuex';
+
+export default defineComponent({
+  name: 'App',
+  computed: {
+    // mix the getters into computed with object spread operator
+    ...mapGetters([
+      'loggedIn',
+      // ...
+    ])
+  }
+});
+</script>
 
 <style lang="scss">
 #app {
