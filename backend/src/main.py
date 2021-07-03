@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from tortoise.contrib.fastapi import register_tortoise
+from tortoise.query_utils import Q
 
 from .users.models import Status, User_Pydantic, UserIn_Pydantic, Users
 
@@ -37,9 +38,9 @@ class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket, user_id: int):
         await websocket.accept()
-        message = await User_Pydantic.from_queryset(Users.exclude(status=Status.OFFLINE))
+        message = await User_Pydantic.from_queryset(Users.exclude(Q(status=Status.OFFLINE) | Q(id=user_id)))
         print(message)
         await self.send_personal_message(message=f"'users': {[m.json(indent=4) for m in message]}", websocket=websocket)
         self.active_connections.append(websocket)
@@ -65,7 +66,7 @@ async def get_users():
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket)
+    await manager.connect(websocket, client_id)
     try:
         while True:
             data = await websocket.receive_text()

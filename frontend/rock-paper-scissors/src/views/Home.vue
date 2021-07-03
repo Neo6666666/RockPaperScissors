@@ -2,18 +2,18 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
 
-    <p>{{this.$store.user}}</p>
+    <Users />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Users from '@/components/Users.vue';
 
 export default defineComponent({
   name: 'Home',
   components: {
-    HelloWorld,
+    Users,
   },
 });
 </script>
