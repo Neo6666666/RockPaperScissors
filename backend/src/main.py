@@ -1,17 +1,12 @@
-from typing import List
-
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI
 
 from starlette.middleware.cors import CORSMiddleware
 
 from tortoise.contrib.fastapi import register_tortoise
-from tortoise.query_utils import Q
-
-from .users.models import Status, User_Pydantic, UserIn_Pydantic, Users
 
 from .login.login import router as api_router
 from .register.register_controller import router as reg_api_router
+from .websockets.websocket import router as websocket_api
 
 
 app = FastAPI()
@@ -27,58 +22,21 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # can alter with time
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket, user_id: int):
-        await websocket.accept()
-        message = await User_Pydantic.from_queryset(Users.exclude(Q(status=Status.OFFLINE) | Q(id=user_id)))
-        print(message)
-        await self.send_personal_message(message=f"'users': {[m.json(indent=4) for m in message]}", websocket=websocket)
-        self.active_connections.append(websocket)
-
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
-
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_json(message)
-
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_text(message)
-
-
-manager = ConnectionManager()
-
-
-@app.get("/users", response_model=List[User_Pydantic])
-async def get_users():
-    return await User_Pydantic.from_queryset(Users.exclude(status=Status.OFFLINE))
-
-
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket, client_id)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await manager.send_personal_message(f"You wrote: {data}", websocket)
-            await manager.broadcast(f"Client #{client_id} says: {data}")
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+# @app.get("/users", response_model=List[User_Pydantic])
+# async def get_users():
+#     return await User_Pydantic.from_queryset(Users.exclude(status=Status.OFFLINE))
 
 
 app.include_router(api_router, prefix="/api")
 app.include_router(reg_api_router, prefix="/api")
+app.include_router(websocket_api, prefix='/ws')
 
 register_tortoise(
     app,
