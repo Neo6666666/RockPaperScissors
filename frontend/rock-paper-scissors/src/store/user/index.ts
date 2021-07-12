@@ -1,3 +1,5 @@
+import { InjectionKey } from 'vue'
+import { Store } from 'vuex'
 import Api from '@/services/api'
 
 interface IUser {
@@ -6,17 +8,19 @@ interface IUser {
     id: string
 }
 
+export const key: InjectionKey<Store<IUser>> = Symbol()
 const localUser: any = JSON.parse(localStorage.getItem('user') || 'false');
 
 console.log(localUser);
 
 export default {
-    state: (): { user: IUser } => ({
+    state: (): { user: IUser, users: IUser[] } => ({
         user: {
             username: "",
             status: "",
             id: ""
-        }
+        },
+        users: [],
     }),
     mutations: {
         set(state: any, payload: IUser) {
@@ -25,6 +29,12 @@ export default {
             }
 
             state.user = payload;
+        },
+        setUsers(state: any, payload: any) {
+            console.log('22222222', payload);
+            
+
+            state.users = payload;
         }
     },
     getters: {

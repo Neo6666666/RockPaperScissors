@@ -5,7 +5,7 @@ from .models import Status, Users
 
 
 async def GetUser(data: Dict) -> Users:
-    return await Users.get(data)
+    return await Users.get(**data)
 
 
 async def SetNewStatusToUser(user: Users, status: Status) -> None:

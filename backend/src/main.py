@@ -17,7 +17,7 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8080",
-    "https://localhost:3000",
+    "*",
 ]
 
 app.add_middleware(
@@ -36,7 +36,7 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api")
 app.include_router(reg_api_router, prefix="/api")
-app.include_router(websocket_api, prefix='/ws')
+app.include_router(websocket_api, prefix='/users')
 
 register_tortoise(
     app,

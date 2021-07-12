@@ -1,10 +1,16 @@
 from typing import List
+import json
 
 from fastapi import WebSocket
 
 from tortoise.query_utils import Q
 
 from ..users.models import Status, User_Pydantic, UserIn_Pydantic, Users
+
+from logging import getLogger
+
+
+logger = getLogger()
 
 
 class ConnectionManager:
@@ -21,10 +27,15 @@ class ConnectionManager:
             send newcome user list of all active users (MessageType.ADD_USERS) <- i.e. active_connections
             append new connection to active_connections
         """
+        logger.warning(f'Connect {user_id}')
         await websocket.accept()
         message = await User_Pydantic.from_queryset(Users.exclude(Q(status=Status.OFFLINE) | Q(id=user_id)))
-        print(message)
-        await self.send_personal_message(message=f"'users': {[m.json(indent=4) for m in message]}", websocket=websocket)
+        await self.send_personal_message(message={'users': [
+            {
+                "id": m.id,
+                "username": m.username
+            }
+        for m in message]}, websocket=websocket)
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
@@ -34,7 +45,7 @@ class ConnectionManager:
         """
         self.active_connections.remove(websocket)
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
+    async def send_personal_message(self, message, websocket: WebSocket):
         await websocket.send_json(message)
 
     async def broadcast(self, message: str):
