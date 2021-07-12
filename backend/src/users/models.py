@@ -19,6 +19,13 @@ class Users(models.Model):
     # class PydanticMeta:
     #     exclude = ["password_hash"]
 
+    def as_dict(self) -> dict:
+        return {
+            'id': self.id,
+            'username': self.username,
+            'status': self.status,
+        }
+
 
 User_Pydantic = pydantic_model_creator(Users, name="User")
 UserIn_Pydantic = pydantic_model_creator(

@@ -1,21 +1,21 @@
-from typing import List
-import json
+from backend.src.messages.abstract_message import MessageType
+from typing import Dict, List
 
 from fastapi import WebSocket
 
 from tortoise.query_utils import Q
 
-from ..users.models import Status, User_Pydantic, UserIn_Pydantic, Users
+from ..users.utils import GetUserByID
 
-from logging import getLogger
+from .connection import Connection
 
 
-logger = getLogger()
+from ..messages.message_factory import MessageFactory
 
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
+        self.active_connections: Dict[Connection] = {}
 
     async def connect(self, websocket: WebSocket, user_id: int):
         """
@@ -27,16 +27,22 @@ class ConnectionManager:
             send newcome user list of all active users (MessageType.ADD_USERS) <- i.e. active_connections
             append new connection to active_connections
         """
-        logger.warning(f'Connect {user_id}')
         await websocket.accept()
-        message = await User_Pydantic.from_queryset(Users.exclude(Q(status=Status.OFFLINE) | Q(id=user_id)))
-        await self.send_personal_message(message={'users': [
-            {
-                "id": m.id,
-                "username": m.username
-            }
-        for m in message]}, websocket=websocket)
-        self.active_connections.append(websocket)
+        new_user = await GetUserByID({'id': user_id})
+        new_connection = Connection(user=new_user, websocket=websocket)
+        personal_message = await MessageFactory.create_message(
+            MessageType.ADD_USERS,
+            self.active_connections
+        )
+        to_all_messaage = await MessageFactory.create_message(
+            MessageType.NEW_USER,
+            new_user
+        )
+        await self.broadcast(message=to_all_messaage)
+        await self.send_personal_message(
+            message=personal_message,
+            websocket=websocket)
+        self.active_connections[user_id] = new_connection
 
     def disconnect(self, websocket: WebSocket):
         """
