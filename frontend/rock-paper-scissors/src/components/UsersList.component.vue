@@ -2,14 +2,14 @@
     <div class="user-list">
         <ul>
             <UserItem v-for="user in users"
-            :key="user.id" :model="user">
+            :key="user.id" :model="user"/>
         </ul>
     </div>
 </template>
 
 
 <script lang="ts">
-import  UserItem  from "@/components/UserItem.component.vue";
+import  UserItem  from "./UserItem.component.vue";
 import { UserInterface } from "@/models/users/User.interface";
 import { defineComponent, PropType } from "@vue/runtime-core";
 

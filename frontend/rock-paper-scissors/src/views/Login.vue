@@ -25,7 +25,7 @@ export default defineComponent({
 
         store.dispatch('login', {
             username: username.value,
-            password_hash: password.value
+            password: password.value
         });
     }
 
