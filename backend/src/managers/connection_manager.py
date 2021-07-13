@@ -1,4 +1,3 @@
-from backend.src.messages.abstract_message import MessageType
 from typing import Dict, List
 
 from fastapi import WebSocket
@@ -10,7 +9,8 @@ from ..users.utils import GetUserByID
 from .connection import Connection
 
 
-from ..messages.message_factory import MessageFactory
+from ..messages.new_user_message import NewUserMessage
+from ..messages.add_users_message import AddUsersMessage
 
 
 class ConnectionManager:
@@ -28,16 +28,11 @@ class ConnectionManager:
             append new connection to active_connections
         """
         await websocket.accept()
-        new_user = await GetUserByID({'id': user_id})
+        new_user = await GetUserByID(user_id)
         new_connection = Connection(user=new_user, websocket=websocket)
-        personal_message = await MessageFactory.create_message(
-            MessageType.ADD_USERS,
-            self.active_connections
-        )
-        to_all_messaage = await MessageFactory.create_message(
-            MessageType.NEW_USER,
-            new_user
-        )
+        personal_message = await AddUsersMessage.get_message(
+            connections=self.active_connections)
+        to_all_messaage = await NewUserMessage.get_message(new_user)
         await self.broadcast(message=to_all_messaage)
         await self.send_personal_message(
             message=personal_message,
@@ -55,8 +50,8 @@ class ConnectionManager:
         await websocket.send_json(message)
 
     async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_json(message)
+        for connection in self.active_connections.values():
+            await connection.websocket.send_json(message)
 
 
 manager = ConnectionManager()

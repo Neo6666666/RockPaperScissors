@@ -9,7 +9,7 @@ async def GetUser(data: Dict) -> Users:
 
 
 async def GetUserByID(id: int) -> Users:
-    return await GetUser({'id': id})
+    return await GetUser({'id': id, })
 
 
 async def SetNewStatusToUser(user: Users, status: Status) -> None:

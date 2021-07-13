@@ -8,6 +8,7 @@ class MessageType(Enum):
 
 
 class AbstractMessage(ABC):
+    @staticmethod
     @abstractmethod
-    async def get_message(self, *args, **kwargs) -> dict:
+    async def get_message(*args, **kwargs) -> dict:
         raise NotImplementedError
