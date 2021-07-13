@@ -7,7 +7,7 @@ class NewUserMessage(AbstractMessage):
     async def get_message(user: Users) -> dict:
         try:
             return {
-                'message_type': MessageType.NEW_USER,
+                'content_type': MessageType.NEW_USER,
                 'user': user.as_dict()
             }
         except Exception:

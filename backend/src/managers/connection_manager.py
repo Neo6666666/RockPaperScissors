@@ -36,7 +36,7 @@ class ConnectionManager:
         await self.broadcast(message=to_all_messaage)
         await self.send_personal_message(
             message=personal_message,
-            websocket=websocket)
+            websocket=new_connection.websocket)
         self.active_connections[user_id] = new_connection
 
     def disconnect(self, websocket: WebSocket):
@@ -44,7 +44,9 @@ class ConnectionManager:
             broadcast message to all users exept deleted one(MessageType.REMOVE_USER)
             remove connection from active_connections
         """
-        self.active_connections.remove(websocket)
+        for k, v in self.active_connections.items():
+            if websocket is v.websocket:
+                self.active_connections.pop(k)
 
     async def send_personal_message(self, message, websocket: WebSocket):
         await websocket.send_json(message)

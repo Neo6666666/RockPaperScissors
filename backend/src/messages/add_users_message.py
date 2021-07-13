@@ -1,16 +1,15 @@
-from typing import List
-
+from typing import Dict
 from .abstract_message import AbstractMessage, MessageType
 from ..managers.connection import Connection
 
 
 class AddUsersMessage(AbstractMessage):
-    async def get_message(connections: List[Connection]) -> dict:
+    async def get_message(connections: Dict[str, Connection]) -> dict:
         try:
-            conns = await connections
+            # conns = await connections
             return {
-                'message_type': MessageType.ADD_USERS,
-                'users': [c.user.as_dict() for c in conns]
+                'content_type': MessageType.ADD_USERS,
+                'users': [c.user.as_dict() for c in connections.values()]
             }
         except Exception:
             return dict()
