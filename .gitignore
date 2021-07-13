@@ -1,3 +1,6 @@
 backend/database.db
 backend/database.db-shm
 backend/database.db-wal
+
+!*/__pycashe__/*
+!*/*.pyc
