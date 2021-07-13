@@ -1,7 +1,11 @@
 from enum import Enum
+from typing import Any
 
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
+from tortoise.contrib.pydantic.base import PydanticModel
+
+from ..login.utils import hash_password
 
 
 class Status(str, Enum):
@@ -13,11 +17,17 @@ class Status(str, Enum):
 class Users(models.Model):
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=20, unique=True)
-    password_hash = fields.CharField(max_length=128)
+    password_hash = fields.BinaryField()
+    salt = fields.BinaryField()
     status = fields.CharEnumField(Status, default=Status.ACTIVE)
 
-    # class PydanticMeta:
-    #     exclude = ["password_hash"]
+    @classmethod
+    async def create(cls: Any, **kwargs: Any) -> Any:
+        salt, pw = hash_password(kwargs['password'])
+        return await super().create(**kwargs, salt=salt, password_hash=pw)
+
+    class PydanticMeta:
+        exclude = ["password_hash", "salt"]
 
     def as_dict(self) -> dict:
         return {
@@ -28,5 +38,8 @@ class Users(models.Model):
 
 
 User_Pydantic = pydantic_model_creator(Users, name="User")
-UserIn_Pydantic = pydantic_model_creator(
-    Users, name="UserIn", exclude_readonly=True)
+
+
+class UserIn_Pydantic(PydanticModel):
+    username: str
+    password: str

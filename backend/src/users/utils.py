@@ -12,9 +12,13 @@ async def GetUserByID(id: int) -> Users:
     return await GetUser({'id': id, })
 
 
+async def GetUserByUsername(name: str) -> Users:
+    return await GetUser({'username': name})
+
+
 async def SetNewStatusToUser(user: Users, status: Status) -> None:
     user.status = status
-    user.save()
+    await user.save()
 
 
 async def SetUserIsActive(user: Users) -> None:
