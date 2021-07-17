@@ -1,38 +1,34 @@
 <template>
   <div class="login">
-    <form @submit="submitForm">
-        <input v-model="username" type="text" name="username" />
-        <input v-model="password" type="password" name="password" />
-
-        <button type="submit">Submit</button>
-    </form>
+    <SignComponent :title="formTitle" @formAction="submitForm"/>
   </div>
 </template>
 
 <script lang="ts">
 import { useStore } from 'vuex';
 import { defineComponent, Ref, ref } from 'vue';
+import SignComponent  from "@/components/Sign.component.vue";
+import { SignFormData } from "@/models/forms/SignFormData.interface";
 
 export default defineComponent({
   name: 'Login',
+  components:{
+    SignComponent
+  },
   setup() {
     const store = useStore()
 
-    const username: Ref<string> = ref("");
-    const password: Ref<string> = ref("");
-    const submitForm = (e: Event) => {
-        e.preventDefault();
-
+    const formTitle: String = "Sign In";
+    const submitForm = (e: SignFormData) => {
+        console.log(e);
+        
         store.dispatch('login', {
-            username: username.value,
-            password: password.value
-        });
+          username: e.username,
+          password: e.password
+          });
     }
-
     return {
-      username,
-      password,
-
+      formTitle,
       submitForm
     };
   },
