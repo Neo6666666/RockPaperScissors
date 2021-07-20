@@ -44,7 +44,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .sign-form-container {
   position: absolute;
   top: 50%;

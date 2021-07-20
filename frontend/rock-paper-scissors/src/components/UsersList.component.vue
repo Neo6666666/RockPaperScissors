@@ -21,7 +21,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 ul {
   list-style-type: none;
   margin-block-start: 0;
