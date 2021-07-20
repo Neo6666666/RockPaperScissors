@@ -1,9 +1,8 @@
-import { createStore } from 'vuex'
-import user from './user'
+import { createStore } from "vuex";
 
 export default createStore({
-  strict: process.env.NODE_ENV !== 'production',
-  modules: {
-    user
-  }
-})
+  state: {},
+  mutations: {},
+  actions: {},
+  modules: {},
+});

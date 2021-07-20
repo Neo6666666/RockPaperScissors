@@ -1,39 +1,39 @@
 <template>
   <div class="register">
     <form @submit="submitForm">
-        <input v-model="username" type="text" name="username" />
-        <input v-model="password" type="password" name="password" />
+      <input v-model="username" type="text" name="username" />
+      <input v-model="password" type="password" name="password" />
 
-        <button type="submit">Submit</button>
+      <button type="submit">Submit</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { useStore } from 'vuex';
-import { defineComponent, Ref, ref } from 'vue';
+import { useStore } from "vuex";
+import { defineComponent, Ref, ref } from "vue";
 
 export default defineComponent({
-  name: 'Login',
+  name: "Login",
   setup() {
-    const store = useStore()
+    const store = useStore();
 
     const username: Ref<string> = ref("");
     const password: Ref<string> = ref("");
     const submitForm = (e: Event) => {
-        e.preventDefault();
+      e.preventDefault();
 
-        store.dispatch('register', {
-            username: username.value,
-            password: password.value
-        });
-    }
+      store.dispatch("register", {
+        username: username.value,
+        password: password.value,
+      });
+    };
 
     return {
       username,
       password,
 
-      submitForm
+      submitForm,
     };
   },
 });

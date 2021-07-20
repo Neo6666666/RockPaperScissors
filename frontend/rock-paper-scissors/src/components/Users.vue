@@ -1,61 +1,52 @@
 <template>
   <div class="home">
-    <input type="text" name="test" v-model="message">
+    <input type="text" name="test" v-model="message" />
     <button v-on:click="sendMessage">Send Message</button>
-    <UsersList :users="users"/>
+    <UsersList :users="users" />
     <template v-if="users.length">
       <ul>
-        <li v-for="user in users" :key="user.id">{{user.username}}</li>
+        <li v-for="user in users" :key="user.id">{{ user.username }}</li>
       </ul>
     </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useStore, mapState } from 'vuex';
+import { defineComponent, ref } from "vue";
+import { useStore, mapState } from "vuex";
 
 import UsersList from "./UsersList.component.vue";
 
-import WebSocketService from '@/services/webSocket'
+import WebSocketService from "@/services/webSocket";
 
 export default defineComponent({
   components: {
-    UsersList
+    UsersList,
   },
-  name: 'User',
+  name: "User",
   computed: {
     ...mapState({
-      users: (state: any) => state.user.users
-    })
+      users: (state: any) => state.user.users,
+    }),
   },
   setup() {
     const store = useStore();
-    const user = JSON.parse(localStorage.getItem('user') || '');
+    const user = JSON.parse(localStorage.getItem("user") || "");
     const users = store.state;
-    const message = ref('');
-
-    console.log('users', users);
+    const message = ref("");
 
     const connection = new WebSocketService(`${user.id}`);
 
-    console.log( connection );
-    
-
-    connection.open()
-    connection.message()
-    connection.error()
-    connection.close()
+    connection.open();
+    connection.message();
+    connection.error();
+    connection.close();
 
     const sendMessage = () => {
-      // @ts-ignore
-      console.log(typeof message, message);
-      
-
       connection?.send(message.value);
-    }
+    };
 
-    return { message, sendMessage }
-  }
+    return { message, sendMessage };
+  },
 });
 </script>

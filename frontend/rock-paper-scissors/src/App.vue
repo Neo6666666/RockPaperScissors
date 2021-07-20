@@ -6,23 +6,18 @@
     <span>&nbsp;|&nbsp;</span>
     <router-link v-if="loggedIn" to="/home">Home</router-link>
   </div>
-  <router-view/>
+  <router-view />
 </template>
 
-
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue';
-import { mapGetters } from 'vuex';
+import { defineComponent } from "vue";
+import { mapGetters } from "vuex";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   computed: {
-    // mix the getters into computed with object spread operator
-    ...mapGetters([
-      'loggedIn',
-      // ...
-    ])
-  }
+    ...mapGetters(["loggedIn"]),
+  },
 });
 </script>
 

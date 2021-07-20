@@ -1,4 +1,4 @@
 export interface SignFormData {
-    username: String
-    password: String
+  username: string;
+  password: string;
 }
