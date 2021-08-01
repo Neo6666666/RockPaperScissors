@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import UserItem from "./UserItem.component.vue";
+import UserItem from "./UserItem.vue";
 import { UserInterface } from "@/models/users/User.interface";
 import { defineComponent, PropType } from "@vue/runtime-core";
 

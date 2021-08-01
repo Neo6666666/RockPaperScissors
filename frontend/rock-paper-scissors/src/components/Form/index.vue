@@ -1,14 +1,14 @@
 <template>
   <div class="sign-form-container">
     <h3>{{ title }}</h3>
-    <form @submit="submitForm" class="sign-form">
+    <form @submit.prevent="submitForm" class="sign-form">
       <div class="form-control">
         <label for="username">Username</label>
-        <input v-model="username" type="text" name="username" />
+        <input v-model="state.username" type="text" name="username" />
       </div>
       <div class="form-control">
         <label for="password">Password</label>
-        <input v-model="password" type="password" name="password" />
+        <input v-model="state.password" type="password" name="password" />
       </div>
       <div class="form-control">
         <input type="submit" value="Submit" />
@@ -18,25 +18,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
+import { defineComponent, reactive } from "vue";
 
 export default defineComponent({
   props: {
     title: String,
   },
   setup(props, { emit }) {
-    const username: Ref<string> = ref("");
-    const password: Ref<string> = ref("");
-    const submitForm = (e: Event) => {
-      e.preventDefault();
+    const state: Record<string, string> = reactive({
+      username: "",
+      password: "",
+    });
+
+    const submitForm = () => {
       emit("formAction", {
-        username: username.value,
-        password: password.value,
+        username: state.username,
+        password: state.password,
       });
     };
     return {
-      username,
-      password,
+      state,
 
       submitForm,
     };

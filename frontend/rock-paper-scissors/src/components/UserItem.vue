@@ -17,7 +17,7 @@ export default defineComponent({
   props: {
     user: Object as PropType<UserInterface>,
   },
-  setup(props, { emit }) {
+  setup(props) {
     const isInviteable = computed(() => {
       return props.user?.status === "Active";
     });

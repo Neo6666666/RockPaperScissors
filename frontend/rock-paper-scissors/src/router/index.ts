@@ -6,18 +6,19 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Login",
     component: () =>
-      import(/* webpackChunkName: "login" */ "@/views/Login.vue"),
+      import(/* webpackChunkName: "login" */ "@/views/Login/index.vue"),
   },
   {
     path: "/register",
     name: "Register",
     component: () =>
-      import(/* webpackChunkName: "register" */ "@/views/Register.vue"),
+      import(/* webpackChunkName: "register" */ "@/views/Register/index.vue"),
   },
   {
     path: "/home",
     name: "Home",
-    component: () => import(/* webpackChunkName: "home" */ "@/views/Home.vue"),
+    component: () =>
+      import(/* webpackChunkName: "home" */ "@/views/Home/index.vue"),
     meta: { requiresAuth: true },
   },
 ];
