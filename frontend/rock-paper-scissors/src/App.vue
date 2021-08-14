@@ -1,9 +1,7 @@
 <template>
-  <div id="nav">
+  <div class="navbar">
     <router-link to="/">Login</router-link>
-    <span>&nbsp;|&nbsp;</span>
     <router-link to="/register">Register</router-link>
-    <span>&nbsp;|&nbsp;</span>
     <router-link v-if="loggedIn" to="/home">Home</router-link>
   </div>
   <router-view />

@@ -4,11 +4,11 @@
       {{ label }}
     </label>
     <input
+      :value="modelValue"
       @input="handleInput"
-      :value="value"
       :name="inputName"
+      :type="type"
       class="form-input__main"
-      type="text"
     />
   </div>
 </template>
@@ -28,14 +28,18 @@ export default defineComponent({
   name: "BaseInput",
   props: {
     label: String,
+    type: String,
     inputName: String,
-    value: String,
+    modelValue: String,
   },
+  emits: ["update:modelValue"],
   setup(props, { emit }) {
     const handleInput = (e: Event) => {
       const target = e.target as HTMLInputElement;
 
-      emit("handle-input", target.value);
+      console.log(e);
+
+      emit("update:modelValue", target.value);
     };
 
     return { handleInput };

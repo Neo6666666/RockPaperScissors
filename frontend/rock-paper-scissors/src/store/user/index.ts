@@ -35,6 +35,11 @@ export default {
 
       state.users = payload;
     },
+    addUser(state: any, payload: any): void {
+      console.log("33333333", payload);
+
+      state.users.push(payload);
+    },
   },
   getters: {
     loggedIn(state: any) {

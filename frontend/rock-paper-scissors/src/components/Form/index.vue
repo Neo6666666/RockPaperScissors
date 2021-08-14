@@ -2,25 +2,30 @@
   <div class="sign-form-container">
     <h3>{{ title }}</h3>
     <form @submit.prevent="submitForm" class="sign-form">
-      <div class="form-control">
-        <label for="username">Username</label>
-        <input v-model="state.username" type="text" name="username" />
-      </div>
-      <div class="form-control">
-        <label for="password">Password</label>
-        <input v-model="state.password" type="password" name="password" />
-      </div>
-      <div class="form-control">
-        <input type="submit" value="Submit" />
-      </div>
+      <base-input
+        label="login"
+        type="login"
+        v-model:modelValue="state.username"
+      />
+      <base-input
+        label="password"
+        type="password"
+        v-model:modelValue="state.password"
+      />
+
+      <button type="submit">Submit</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
+import BaseInput from "@/components/BaseInput/index.vue";
 
 export default defineComponent({
+  components: {
+    BaseInput,
+  },
   props: {
     title: String,
   },
@@ -30,16 +35,15 @@ export default defineComponent({
       password: "",
     });
 
-    const submitForm = () => {
-      emit("formAction", {
-        username: state.username,
-        password: state.password,
-      });
-    };
     return {
       state,
 
-      submitForm,
+      submitForm() {
+        emit("handle-submit", {
+          username: state.username,
+          password: state.password,
+        });
+      },
     };
   },
 });
