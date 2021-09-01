@@ -5,6 +5,7 @@ from enum import Enum
 class MessageType(str, Enum):
     NEW_USER = 'NEW_USER'
     ADD_USERS = 'ADD_USERS'
+    REMOVE_USER = 'RM_USER'
 
 
 class AbstractMessage(ABC):
