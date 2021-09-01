@@ -1,50 +1,55 @@
 <template>
   <div class="sign-form-container">
     <h3>{{ title }}</h3>
-    <form @submit="submitForm" class="sign-form">
-      <div class="form-control">
-        <label for="username">Username</label>
-        <input v-model="username" type="text" name="username" />
-      </div>
-      <div class="form-control">
-        <label for="password">Password</label>
-        <input v-model="password" type="password" name="password" />
-      </div>
-      <div class="form-control">
-        <input type="submit" value="Submit" />
-      </div>
+    <form @submit.prevent="submitForm" class="sign-form">
+      <base-input
+        label="login"
+        type="login"
+        v-model:modelValue="state.username"
+      />
+      <base-input
+        label="password"
+        type="password"
+        v-model:modelValue="state.password"
+      />
+
+      <button type="submit">Submit</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
+import { defineComponent, reactive } from "vue";
+import BaseInput from "@/components/BaseInput/index.vue";
 
 export default defineComponent({
+  components: {
+    BaseInput,
+  },
   props: {
     title: String,
   },
   setup(props, { emit }) {
-    const username: Ref<string> = ref("");
-    const password: Ref<string> = ref("");
-    const submitForm = (e: Event) => {
-      e.preventDefault();
-      emit("formAction", {
-        username: username.value,
-        password: password.value,
-      });
-    };
-    return {
-      username,
-      password,
+    const state: Record<string, string> = reactive({
+      username: "",
+      password: "",
+    });
 
-      submitForm,
+    return {
+      state,
+
+      submitForm() {
+        emit("handle-submit", {
+          username: state.username,
+          password: state.password,
+        });
+      },
     };
   },
 });
 </script>
 
-<style lang="scss">
+<style>
 .sign-form-container {
   position: absolute;
   top: 50%;

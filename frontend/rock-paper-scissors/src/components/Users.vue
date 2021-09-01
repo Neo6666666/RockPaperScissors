@@ -15,7 +15,7 @@
 import { defineComponent, ref } from "vue";
 import { useStore, mapState } from "vuex";
 
-import UsersList from "./UsersList.component.vue";
+import UsersList from "./UsersList.vue";
 
 import WebSocketService from "@/services/webSocket";
 

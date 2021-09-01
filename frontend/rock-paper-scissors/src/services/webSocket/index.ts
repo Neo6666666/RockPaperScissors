@@ -1,5 +1,10 @@
 import store from "@/store";
 
+enum messageStatus {
+  NEW_USER = "NEW_USER",
+  ADD_USERS = "ADD_USERS",
+}
+
 export default class WebSocketService {
   socket: WebSocket;
 
@@ -9,37 +14,49 @@ export default class WebSocketService {
 
   open() {
     this.socket.onopen = (e) => {
-      alert("[open] Соединение установлено");
-      alert("Отправляем данные на сервер");
+      console.log("[open] Соединение установлено");
+      console.log("Отправляем данные на сервер");
     };
   }
 
   message() {
-    this.socket.onmessage = (event) => {
-      alert(`[message] Данные получены с сервера: ${event.data}`);
+    this.socket.onmessage = (event: MessageEvent) => {
+      console.log(
+        `[message] Данные получены с сервера: ${event.data}`,
+        typeof event
+      );
 
-      console.log("111111", store, JSON.parse(event.data));
+      const eventData = JSON.parse(event.data);
+      const response = {
+        user: eventData.user,
+        users: eventData.users,
+        type: eventData.content_type,
+      };
 
-      store.commit("setUsers", JSON.parse(event.data).users);
+      if (response.type === messageStatus.ADD_USERS) {
+        store.commit("setUsers", response.users);
+      } else {
+        store.commit("addUser", response.user);
+      }
     };
   }
 
   error() {
     this.socket.onerror = (error: any): void => {
-      alert(`[error] ${error?.message}`);
+      console.log(`[error] ${error?.message}`);
     };
   }
 
   close() {
     this.socket.onclose = (e) => {
       if (e.wasClean) {
-        alert(
+        console.log(
           `[close] Соединение закрыто чисто, код=${e.code} причина=${e.reason}`
         );
       } else {
         // например, сервер убил процесс или сеть недоступна
         // обычно в этом случае event.code 1006
-        alert("[close] Соединение прервано");
+        console.log("[close] Соединение прервано");
       }
     };
   }

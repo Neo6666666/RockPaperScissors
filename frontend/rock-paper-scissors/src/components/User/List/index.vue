@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import UserItem from "./UserItem.component.vue";
+import UserItem from "./UserItem.vue";
 import { UserInterface } from "@/models/users/User.interface";
 import { defineComponent, PropType } from "@vue/runtime-core";
 
@@ -21,7 +21,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 ul {
   list-style-type: none;
   margin-block-start: 0;
