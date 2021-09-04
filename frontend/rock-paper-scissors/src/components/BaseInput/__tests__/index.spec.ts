@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
-import BaseInput from "./index.vue";
+import BaseInput from "../index.vue";
 
 describe("Base Input", () => {
   it("renders props.msg when passed", () => {

@@ -11,7 +11,7 @@ interface IUser {
 export const key: InjectionKey<Store<IUser>> = Symbol();
 const localUser: any = JSON.parse(localStorage.getItem("user") || "false");
 
-console.log(localUser);
+// console.log(localUser);
 
 export default {
   state: (): { user: IUser; users: IUser[] } => ({
@@ -31,12 +31,12 @@ export default {
       state.user = payload;
     },
     setUsers(state: any, payload: any): void {
-      console.log("22222222", payload);
+      // console.log("22222222", payload);
 
       state.users = payload;
     },
     addUser(state: any, payload: any): void {
-      console.log("33333333", payload);
+      // console.log("33333333", payload);
 
       state.users.push(payload);
     },

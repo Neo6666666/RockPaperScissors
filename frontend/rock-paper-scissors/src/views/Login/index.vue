@@ -5,6 +5,7 @@
 <script lang="ts">
 import { useStore } from "vuex";
 import { defineComponent, reactive } from "vue";
+import router from '@/router';
 import LoginForm from "@/components/LoginForm/index.vue";
 
 export default defineComponent({
@@ -24,12 +25,14 @@ export default defineComponent({
 
       handleInput,
       submitForm(user: { username: string; password: string }) {
-        console.log(user);
+        // console.log(user);
 
         store.dispatch("login", {
           username: user.username,
           password: user.password,
         });
+
+        router.push('/home');
       },
     };
   },
