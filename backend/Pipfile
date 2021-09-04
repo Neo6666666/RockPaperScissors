@@ -7,6 +7,7 @@ name = "pypi"
 fastapi = {extras = ["all"], version = "*"}
 uvicorn = "*"
 tortoise-orm = {extras = ["aiosqlite"], version = "*"}
+aerich = "*"
 
 [dev-packages]
 
