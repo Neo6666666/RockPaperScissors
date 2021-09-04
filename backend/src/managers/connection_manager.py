@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from fastapi import WebSocket
 
@@ -31,7 +31,7 @@ class ConnectionManager:
         await websocket.send_json(message)
 
     async def broadcast(self, message: dict):
-        for connection in self.active_connections.values():
+        for key, connection in self.active_connections.items():
             await connection.websocket.send_json(message)
 
     async def handle_first_connection(self, websocket: WebSocket,
@@ -52,6 +52,7 @@ class ConnectionManager:
         personal_message = await AddUsersMessage.get_message(
             connections=self.active_connections)
         to_all_messaage = await NewUserMessage.get_message(new_user)
+    
         await self.broadcast(message=to_all_messaage)
         await self.send_personal_message(
             message=personal_message,
@@ -63,12 +64,17 @@ class ConnectionManager:
             broadcast message to all users exept deleted one(MessageType.REMOVE_USER)
             remove connection from active_connections
         """
+        disconnected: Optional[Connection] = None
         for k, v in self.active_connections.items():
             if websocket is v.websocket:
                 m = await RemoveUserMessage.get_message(v.user)
                 await SetUserIsOffline(v.user)
-                await self.broadcast(message=m)
-                self.active_connections.pop(k)
+                disconnected = k
+                break
+        self.active_connections.pop(disconnected)
+        await self.broadcast(message=m)
+        
+                
 
 
 manager = ConnectionManager()

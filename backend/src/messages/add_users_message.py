@@ -4,6 +4,7 @@ from ..managers.connection import Connection
 
 
 class AddUsersMessage(AbstractMessage):
+    @staticmethod
     async def get_message(connections: Dict[str, Connection]) -> dict:
         try:
             # conns = await connections

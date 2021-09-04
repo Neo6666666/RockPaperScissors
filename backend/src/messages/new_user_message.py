@@ -4,6 +4,7 @@ from .abstract_message import AbstractMessage, MessageType
 
 
 class NewUserMessage(AbstractMessage):
+    @staticmethod
     async def get_message(user: Users) -> dict:
         try:
             return {

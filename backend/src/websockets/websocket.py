@@ -20,5 +20,6 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int = 0):
             await mngr.broadcast(f"Client #{client_id} says: {data}")
     except WebSocketDisconnect:
         # TODO mngr.proceed_disconnect(websocket)
-        mngr.disconnect(websocket)
-        await mngr.broadcast(f"Client #{client_id} left the chat")
+        await mngr.disconnect(websocket)
+        # await mngr.broadcast(f"Client #{client_id} left the chat")
+        

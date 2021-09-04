@@ -4,6 +4,7 @@ from ..users.models import Users
 
 
 class RemoveUserMessage(AbstractMessage):
+    @staticmethod
     async def get_message(user: Users) -> dict:
         try:
             return {
