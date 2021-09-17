@@ -5,24 +5,23 @@
       class="navbar__link"
       active-class="navbar__link_active"
       to="/"
-    >Login</router-link>
+      >Login</router-link
+    >
     <router-link
       v-if="!loggedIn"
       class="navbar__link"
       active-class="navbar__link_active"
       to="/register"
-    >Register</router-link>
+      >Register</router-link
+    >
     <router-link
       v-if="loggedIn"
       class="navbar__link"
       active-class="navbar__link_active"
       to="/home"
-    >Home</router-link>
-    <button
-      v-if="loggedIn"
-      class="navbar__link"
-      @click="logout"
-    >Logout</button>
+      >Home</router-link
+    >
+    <button v-if="loggedIn" class="navbar__link" @click="logout">Logout</button>
   </div>
 
   <router-view />
@@ -31,7 +30,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapGetters } from "vuex";
-import router from '@/router';
+import router from "@/router";
 
 export default defineComponent({
   name: "App",
@@ -41,10 +40,10 @@ export default defineComponent({
   methods: {
     logout() {
       localStorage.clear();
-      router.push('/');
+      router.push("/");
       console.log(123);
-    }
-  }
+    },
+  },
 });
 </script>
 

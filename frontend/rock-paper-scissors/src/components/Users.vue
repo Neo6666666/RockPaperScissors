@@ -1,13 +1,6 @@
 <template>
   <div class="home">
-    <input type="text" name="test" v-model="message" />
-    <button v-on:click="sendMessage">Send Message</button>
-    <UsersList :users="users" />
-    <template v-if="users.length">
-      <ul>
-        <li v-for="user in users" :key="user.id">{{ user.username }}</li>
-      </ul>
-    </template>
+    <UsersList :users="users" @sendInvite="sendInvite" />
   </div>
 </template>
 
@@ -24,16 +17,8 @@ export default defineComponent({
     UsersList,
   },
   name: "User",
-  computed: {
-    ...mapState({
-      users: (state: any) => state.user.users,
-    }),
-  },
   setup() {
-    const store = useStore();
     const user = JSON.parse(localStorage.getItem("user") || "");
-    const users = store.state;
-    const message = ref("");
 
     const connection = new WebSocketService(`${user.id}`);
 
@@ -42,11 +27,38 @@ export default defineComponent({
     connection.error();
     connection.close();
 
-    const sendMessage = () => {
-      connection?.send(message.value);
+    const sendInvite = () => {
+      connection?.send({
+        content_type: "INVITE_USER",
+        host_id: 1,
+        guest_id: 2,
+      });
     };
 
-    return { message, sendMessage };
+    return { sendInvite };
   },
 });
 </script>
+
+<style scoped>
+input {
+  max-width: 300px;
+  width: 100%;
+  height: 40px;
+  margin: 20px auto 0 auto;
+  display: block;
+}
+
+button {
+  background-color: #0089ff;
+  height: 40px;
+  width: 100%;
+  max-width: 300px;
+  border: none;
+  color: white;
+  padding: 0 20px;
+  display: block;
+  font-size: 1.3em;
+  margin: 0 auto;
+}
+</style>

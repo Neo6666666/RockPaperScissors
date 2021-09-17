@@ -34,6 +34,9 @@ class ConnectionManager:
         for key, connection in self.active_connections.items():
             await connection.websocket.send_json(message)
 
+    async def proceed_data(self, data:dict) -> None:
+        
+
     async def handle_first_connection(self, websocket: WebSocket,
                                       user_id: int) -> None:
         """
@@ -73,8 +76,6 @@ class ConnectionManager:
                 break
         self.active_connections.pop(disconnected)
         await self.broadcast(message=m)
-        
-                
 
 
 manager = ConnectionManager()
