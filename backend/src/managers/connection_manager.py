@@ -6,6 +6,7 @@ from ..users.utils import GetUserByID, SetUserIsOffline, SetUserIsActive
 
 from .connection import Connection
 
+from ..handlers.handler_factory import factory
 
 from ..messages.new_user_message import NewUserMessage
 from ..messages.add_users_message import AddUsersMessage
@@ -34,8 +35,17 @@ class ConnectionManager:
         for key, connection in self.active_connections.items():
             await connection.websocket.send_json(message)
 
-    async def proceed_data(self, data:dict) -> None:
-        
+    async def proceed_data(self, data: dict) -> None:
+        message_type: str = data.pop('content_type')
+        handler = factory.get(message_type)
+        result = await handler(data)
+        to = result[0].get('send_to', 'broadcast')
+        if to is not 'broadcast':
+            for reciever in to:
+                conn = self.active_connections.get(reciever)
+                await self.send_personal_message(result[1], conn.websocket)
+        else:
+            await self.broadcast(result[1])
 
     async def handle_first_connection(self, websocket: WebSocket,
                                       user_id: int) -> None:
@@ -55,7 +65,7 @@ class ConnectionManager:
         personal_message = await AddUsersMessage.get_message(
             connections=self.active_connections)
         to_all_messaage = await NewUserMessage.get_message(new_user)
-    
+
         await self.broadcast(message=to_all_messaage)
         await self.send_personal_message(
             message=personal_message,

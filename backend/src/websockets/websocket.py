@@ -1,7 +1,7 @@
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi import APIRouter, Depends
 
-from ..managers.connection_manager import ConnectionManager, get_manager
+from ..managers.connection_manager import get_manager
 
 
 router = APIRouter()
@@ -22,4 +22,3 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int = 0):
         # TODO mngr.proceed_disconnect(websocket)
         await mngr.disconnect(websocket)
         # await mngr.broadcast(f"Client #{client_id} left the chat")
-        

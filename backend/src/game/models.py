@@ -22,6 +22,7 @@ class Invite(models.Model):
         related_name='guest',
         on_delete=SET_NULL
     )
+    is_closed = fields.BooleanField(default=False)
 
     turns: fields.ReverseRelation['Turn']
 
