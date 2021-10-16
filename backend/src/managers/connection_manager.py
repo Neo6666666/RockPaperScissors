@@ -40,7 +40,7 @@ class ConnectionManager:
         handler = factory.get(message_type)
         result = await handler(data)
         to = result[0].get('send_to', 'broadcast')
-        if to is not 'broadcast':
+        if to != 'broadcast':
             for reciever in to:
                 conn = self.active_connections.get(reciever)
                 await self.send_personal_message(result[1], conn.websocket)

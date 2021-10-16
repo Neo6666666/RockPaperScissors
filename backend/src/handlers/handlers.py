@@ -1,8 +1,8 @@
 from typing import Dict, List, Tuple, Union
 
-from backend.src.users.utils import GetUserByID
+from ..users.utils import GetUserByID
 
-from backend.src.game.models import Invite
+from ..game.models import Invite
 
 
 Answer = Tuple[Dict[str, Union[str, List[str]]], Dict[str, Union[str, int]]]
