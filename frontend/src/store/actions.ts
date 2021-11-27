@@ -9,6 +9,7 @@ import { Mutations, Mutation } from './mutations'
 export enum Action {
   initApp = 'initApp',
   login = 'login',
+  register = 'register',
   logout = 'logout'
 }
 
@@ -26,6 +27,17 @@ export interface Actions {
 export const actions: ActionTree<State, State> & Actions = {
   [Action.initApp] () {
     console.log('app inited!')
+  },
+
+  async [Action.register] ({ commit }, user) {
+    try {
+      const { data } = await axios.post('http://localhost:8000/api/register/', user)
+
+      commit(Mutation.SET_USER, data)
+      router.push({ name: RouteNames.Home })
+    } catch (error) {
+      console.log(error)
+    }
   },
 
   async [Action.login] ({ commit }, user) {
