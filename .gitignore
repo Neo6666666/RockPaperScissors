@@ -6,3 +6,4 @@ backend/database.db-wal
 __pycache__/
 
 node_modules/
+yarn-error.log
