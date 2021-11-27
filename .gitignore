@@ -4,3 +4,5 @@ backend/database.db-wal
 
 *.pyc
 __pycache__/
+
+node_modules/
