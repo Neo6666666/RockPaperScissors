@@ -18,15 +18,15 @@ async def invite_user_handler(data: dict) -> Answer:
 
     host = await GetUserByID(data.get('host_id'))
     guest = await GetUserByID(data.get('guest_id'))
-    invite = await Invite.create({'creator': host, 'guest': guest})
-    return tuple(
+    invite = await Invite.create(**{'creator': host, 'guest': guest})
+    return (
         {
             'send_to': [str(guest.id), ]
         },
         {
             'content_type': 'ROOM_AWAIT',
             'host_username': host.username,
-            'room_id': invite.uuid,
+            'room_id': str(invite.uuid),
         }
     )
 
