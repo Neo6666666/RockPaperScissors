@@ -11,6 +11,7 @@ class MessageType(str, Enum):
     ROOM_ACCEPT = 'ROOM_ACCEPT'
     CLOSE_ROOM = 'CLOSE_ROOM'
     ROOM_CLOSED = 'ROOM_CLOSED'
+    MAKE_TURN = 'MAKE_TURN'
 
 
 class AbstractMessage(ABC):

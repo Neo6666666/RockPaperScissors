@@ -2,7 +2,7 @@ from typing import Dict, List, Tuple, Union
 
 from ..users.utils import GetUserByID
 
-from ..game.models import Invite
+from ..game.models import Invite, Turn
 
 
 Answer = Tuple[Dict[str, Union[str, List[str]]], Dict[str, Union[str, int]]]
@@ -32,6 +32,32 @@ async def invite_user_handler(data: dict) -> Answer:
 
 
 async def start_game(data: dict) -> Answer:
+    """
+        { 
+            'content_type': 'ROOM_ACCEPT',
+            'room_id': str, 
+        }
+                        ||
+                        \/
+        {
+            'content_type': 'START_GAME',
+            'turn_id': str,
+        }
+    """
+    invite = await Invite.get({'uuid': data.get('room_id')})
+    turn = await Turn.create(invite=invite)
+    return tuple(
+        {
+            'send_to': [str(invite.creator.id), str(invite.guest.id)]
+        },
+        {
+            'content_type': 'START_GAME',
+            'turn_id': str(turn.uuid),
+        }
+    )
+
+
+async def make_turn(data: Dict) -> Answer:
     pass
 
 
@@ -52,6 +78,6 @@ async def reject_game(data: dict) -> Answer:
         },
         {
             'content_type': 'ROOM_CLOSED',
-            'room_id': uuid,
+            'room_id': str(uuid),
         }
     )
