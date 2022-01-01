@@ -10,10 +10,10 @@ Answer = Tuple[Dict[str, Union[str, List[str]]], Dict[str, Union[str, int]]]
 
 async def invite_user_handler(data: dict) -> Answer:
     """
-     { 'content_type': 'INVITE_USER', 'host_id': int, 'guest_id': int }
-                                    ||
-                                    \/
-     { 'content_type': 'ROOM_AWAIT', 'host_username': str, 'room_id': str, }
+        { 'content_type': 'INVITE_USER', 'host_id': int, 'guest_id': int }
+                            ||
+                            \/
+        { 'content_type': 'ROOM_AWAIT', 'host_username': str, 'room_id': str, }
     """
 
     host = await GetUserByID(data.get('host_id'))
@@ -58,6 +58,13 @@ async def start_game(data: dict) -> Answer:
 
 
 async def make_turn(data: Dict) -> Answer:
+    """
+        {'content_type': 'TURN', 'turn_id': str, 'player': str, 'figure': str, }
+    """
+    pass
+
+
+async def turn_result() -> Answer:
     pass
 
 
